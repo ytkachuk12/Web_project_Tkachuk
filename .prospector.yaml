@@ -1,0 +1,23 @@
+output-format: grouped
+
+uses:
+  - django
+
+ignore-paths:
+  - build
+
+pylint:
+  disable:
+    - too-many-ancestors
+    - too-few-public-methods
+    - missing-docstring
+  options:
+    max-line-length: 120
+
+
+pep8:
+  full: true
+
+
+mccabe:
+  run: false
