@@ -11,7 +11,9 @@ Create API to display time of the take-off and landing  the aircraft with weathe
   - Make versioning for API (like in the first version there will be information about flights and 
   weather, and in the second information about flights and weather and the ozone layer)
 
-To deploy the project, you need  Docker и Compose
+To deploy the project, you need  Docker и Compose and copy .env.dist file
+
+    cp .env.dist .env
 
 For start RUN command
 

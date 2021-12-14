@@ -2,31 +2,28 @@ version: "3.9"
 
 services:
   db:
-    image: postgres:14.0
+    image: postgres:14.0-alpine
     restart: always
-
     environment:
-      POSTGRES_PORT: 5432
-      POSTGRES_USER: yurii
-      POSTGRES_PASSWORD: mypass
-      PGDATA: /var/lib/postgresql/data
+      - SQL_USER=${SQL_USER}
+      - SQL_PASSWORD=${SQL_PASSWORD}
     volumes:
       - db-data:/var/lib/postgresql/data
+    env_file:
+      - .env
     ports:
       - "5432:5432"
 
   app:
     build: .
+    command: python manage.py runserver 0.0.0.0:8000
     restart: on-failure
-    environment:
-      - POSTGRES_USER=yurii
-      - POSTGRES_PASSWORD=mypass
-      - POSTGRES_DB=postgres
-      - DJANGO_ALLOWED_HOSTS=localhost 0.0.0.0:5432
     volumes:
       - .:/flight_mate
     ports:
       - "8000:8000"
+    env_file:
+      - .env
     depends_on:
       - db
 

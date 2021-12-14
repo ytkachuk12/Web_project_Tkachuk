@@ -7,8 +7,3 @@ ENV PYTHONUNBUFFERED 1
 COPY . .
 RUN pip install pipenv && pipenv install --system --ignore-pipfile
 
-EXPOSE 8000
-
-
-CMD ["python", "manage.py", "runserver"]
-
