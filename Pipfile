@@ -10,6 +10,7 @@ yapf = "*"
 pylint-django = "*"
 requests = "*"
 psycopg2-binary = "*"
+celery = "*"
 
 [dev-packages]
 
