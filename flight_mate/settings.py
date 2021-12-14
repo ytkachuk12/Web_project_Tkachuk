@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 
+from celery.schedules import crontab
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -120,7 +122,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = os.environ.get("TIME_ZONE", default='UTC')
 
 USE_I18N = True
 
@@ -140,14 +142,14 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Celery Configuration Options
-CELERY_BROKER_URL = 'amqp://0.0.0.0:5672'
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL")
 
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 
 CELERY_BEAT_SCHEDULE = {
-    'first_task': {
-        'task': 'flight_app.tasks.my_first_task',
-        'schedule': 15.0
+    'parse_flights_task': {
+        'task': 'flight_app.tasks.parse_flights_task',
+        'schedule': crontab(hour=2, minute=0)
     }
 }
