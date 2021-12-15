@@ -11,6 +11,7 @@ pylint-django = "*"
 requests = "*"
 psycopg2-binary = "*"
 celery = "*"
+datetime = "*"
 
 [dev-packages]
 

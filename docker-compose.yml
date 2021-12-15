@@ -27,6 +27,24 @@ services:
     depends_on:
       - db
 
+  rabbitmq:
+    image: rabbitmq:3.9-alpine
+    restart: always
+    ports:
+      - "5672:5672"
+    depends_on:
+      - app
+
+  rabbit-worker:
+    build: .
+    restart: on-failure
+    environment:
+      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+    env_file:
+      - .env
+    command: celery -A flight_mate worker -B -l info
+    depends_on:
+      - rabbitmq
 
 #  nginx:
 #    build: nginx
