@@ -18,3 +18,11 @@ To deploy the project, you need  Docker и Compose and copy .env.dist file
 For start RUN command
 
     docker-compose up -d 
+
+Project has custom django command for Flights service, run
+
+    python manage.py run_parse_flights [date] [-p --period]
+
+or for help run
+
+    python manage.py run_parse_flights -h
