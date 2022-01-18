@@ -1,8 +1,29 @@
-"""DRF serializer"""
+"""DRF serializer
+TODO add weather"""
 from rest_framework import serializers
 
 from flight_app.models import Flight, Aircraft, Airline, Status, Airport, FlightAirport
 from flight_mate.settings import AMSTERDAM_BASE_AIRPORT_NAME
+
+
+class ResponseFlightSerializer(serializers.ModelSerializer):
+    """DRF serializer for api response based on Flight model
+    Serializer output related tables data (Airport model, Airline model)
+    Status and Airport related tables data contain only names(exclude id)
+    """
+    # redefine Status and Airport output
+    status = serializers.SlugRelatedField(many=True, read_only=True, slug_field='name')
+    airport = serializers.SlugRelatedField(many=True, read_only=True, slug_field='name')
+
+    class Meta:
+        """Set all fields that should be serialized
+            all fields has relation to model  Flight
+        Include all fields of related models"""
+        model = Flight
+        fields = '__all__'
+        # Add fields of related models
+        depth = 1
+
 
 class AirlineSerializer(serializers.ModelSerializer):
     """DRF serializer for Airline model"""
