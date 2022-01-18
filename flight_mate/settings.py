@@ -140,6 +140,9 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_BEAT_SCHEDULE = {
     'parse_flights_task': {
         'task': 'flight_app.tasks.parse_flights_task',
-        'schedule': crontab(hour=2, minute=0)
+        'schedule': crontab(hour=12, minute=55),
     }
 }
+
+# Name of base airport(all flights arrive from or departure to the Amsterdam "AMS" Schiphol airport)
+AMSTERDAM_BASE_AIRPORT_NAME = "AMS"

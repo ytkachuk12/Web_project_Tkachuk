@@ -3,8 +3,8 @@ from django.db import models
 
 # Create your models here.
 class Airline(models.Model):
-    code = models.IntegerField()
-    ICAO = models.CharField(max_length=3)
+    code = models.IntegerField(unique=True)
+    ICAO = models.CharField(max_length=3, null=True)
     IATA = models.CharField(max_length=2)
 
 
@@ -15,19 +15,20 @@ class Aircraft(models.Model):
 
 class Flight(models.Model):
     name = models.CharField(max_length=15)
+    last_update = models.DateTimeField()
     airline = models.ForeignKey('Airline', on_delete=models.CASCADE)
     aircraft = models.ForeignKey('Aircraft', on_delete=models.CASCADE)
     schedule_date_time = models.DateTimeField()
-    actual_landing_time = models.DateTimeField()
-    actual_off_time = models.DateTimeField()
-    expected_boarding_time = models.DateTimeField()
-    estimate_landing_time = models.DateTimeField()
+    actual_landing_time = models.DateTimeField(null=True)
+    actual_off_time = models.DateTimeField(null=True)
+    expected_boarding_time = models.DateTimeField(null=True)
+    estimate_landing_time = models.DateTimeField(null=True)
     status = models.ManyToManyField('Status', through='FlightStatus')
     airport = models.ManyToManyField('Airport', through='FlightAirport')
 
 
 class Airport(models.Model):
-    name = models.CharField(max_length=3)
+    name = models.CharField(max_length=3, unique=True)
 
 
 class FlightAirport(models.Model):
@@ -42,7 +43,9 @@ class FlightAirport(models.Model):
 
 
 class Status(models.Model):
-    status = models.CharField(max_length=3)
+    """Status model has some data by default. Data created during migration
+    Look 0002_add_data_into_Status_model.py"""
+    name = models.CharField(max_length=3, unique=True)
 
 
 class FlightStatus(models.Model):

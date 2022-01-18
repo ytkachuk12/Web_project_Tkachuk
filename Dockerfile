@@ -5,5 +5,5 @@ WORKDIR /flight_mate
 ENV PYTHONDONTWRITEBITECODE 1
 ENV PYTHONUNBUFFERED 1
 COPY . .
-RUN pip install pipenv && pipenv install --system --ignore-pipfile
+RUN pip install --upgrade pip && pip install pipenv && pipenv install --system --ignore-pipfile
 
