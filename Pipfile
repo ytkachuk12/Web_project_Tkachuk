@@ -13,6 +13,7 @@ psycopg2-binary = "*"
 celery = "*"
 datetime = "*"
 djangorestframework = "*"
+drf-yasg = "*"
 
 [dev-packages]
 

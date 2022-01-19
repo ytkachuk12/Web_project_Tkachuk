@@ -43,7 +43,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'flight_app.apps.FlightAppConfig'
+    'rest_framework',
+    'drf_yasg',
+    'flight_app.apps.FlightAppConfig',
 ]
 
 MIDDLEWARE = [
