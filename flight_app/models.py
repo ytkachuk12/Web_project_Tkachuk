@@ -7,10 +7,22 @@ class Airline(models.Model):
     ICAO = models.CharField(max_length=3, null=True)
     IATA = models.CharField(max_length=2)
 
+    class Meta:
+        """Index for Airline
+            - search for code, IATA
+            - search for code"""
+        indexes = [models.Index(fields=['code', 'IATA'])]
+
 
 class Aircraft(models.Model):
     type = models.CharField(max_length=10)
     registration = models.CharField(max_length=10)
+
+    class Meta:
+        """Index for Aircraft
+            - search for registration, type
+            - search for registration"""
+        indexes = [models.Index(fields=['registration', 'type'])]
 
 
 class Flight(models.Model):
@@ -26,9 +38,21 @@ class Flight(models.Model):
     status = models.ManyToManyField('Status', through='FlightStatus')
     airport = models.ManyToManyField('Airport', through='FlightAirport')
 
+    class Meta:
+        """Index for Flight
+                    - search for date, period(schedule_date_time field)
+                    - search for name"""
+        indexes = [models.Index(fields=['schedule_date_time']),
+                   models.Index(fields=['name'])]
+
 
 class Airport(models.Model):
     name = models.CharField(max_length=3, unique=True)
+
+    class Meta:
+        """Index for Airport
+            - search for name"""
+        indexes = [models.Index(fields=['name'])]
 
 
 class FlightAirport(models.Model):
@@ -44,7 +68,9 @@ class FlightAirport(models.Model):
 
 class Status(models.Model):
     """Status model has some data by default. Data created during migration
-    Look 0002_add_data_into_Status_model.py"""
+    Look 0002_add_data_into_Status_model.py
+
+    No need to create index on Status because table contains less than 20 statuses"""
     name = models.CharField(max_length=3, unique=True)
 
 
