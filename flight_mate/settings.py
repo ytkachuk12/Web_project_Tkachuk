@@ -148,3 +148,4 @@ CELERY_BEAT_SCHEDULE = {
 
 # Name of base airport(all flights arrive from or departure to the Amsterdam "AMS" Schiphol airport)
 AMSTERDAM_BASE_AIRPORT_NAME = "AMS"
+

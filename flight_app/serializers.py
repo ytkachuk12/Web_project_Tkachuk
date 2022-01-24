@@ -39,9 +39,9 @@ class AirlineSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         """Create new Airline in DB in case current airline does NOT exists in DB,
-        return aicraft - obj of Airline"""
+        return airline - obj of Airline"""
         obj, created = Airline.objects.get_or_create(
-            code=validated_data['code'], ICAO=validated_data['ICAO'], IATA=validated_data['IATA']
+            code=validated_data['code'], IATA=validated_data['IATA'], defaults={'ICAO': validated_data['ICAO']}
         )
         return obj
 
@@ -66,7 +66,7 @@ class AircraftSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         """Create new Aircraft in DB in case current aircraft does NOT exists in DB,
-        return aicraft - obj of Aircraft"""
+        return aircraft - obj of Aircraft"""
         obj, created = Aircraft.objects.get_or_create(
             registration=validated_data['registration'], type=validated_data['type']
         )
@@ -79,7 +79,7 @@ class AirportSerializer(serializers.ListSerializer):
 
     def save(self, **kwargs):
         """Create new Airport in DB in case current airport does NOT exists in DB,
-            return aicport - obj of Airport"""
+            return airport - obj of Airport"""
         for item in self.validated_data:
             Airport.objects.get_or_create(name=item)
 
@@ -137,21 +137,21 @@ class FlightSerializer(serializers.ModelSerializer):
         return check_aircraft
 
     @staticmethod
-    def insert_into_fligt_airport(direction: str, flight: Flight, airports: list[Airport]) -> None:
+    def insert_into_flight_airport(direction: str, flight: Flight, airports: list[Airport]) -> None:
         """Insert data into FlightAirport model.
         Determine the airport of depature and arrive
         Add transit airpors (if it exists)
             :param direction: departure flight "D" or an arrival flight "A".
             :param flight: Flight model object
-            :param airorts Airport model objects"""
+            :param airports Airport model objects"""
         # get base Amsterdam Schiphol airport (id=1, name="AMS")
         base_airport = Airport.objects.get(name=AMSTERDAM_BASE_AIRPORT_NAME)
         if direction == 'A':
-            # Determine the airport of depature and arrive
+            # Determine the airport of departure and arrive
             flight_airport = FlightAirport(flight=flight, airport=airports[0], from_to_marker='DEP')
             flight_airport_base = FlightAirport(flight=flight, airport=base_airport, from_to_marker='ARR')
         else:
-            # Determine the airport of depature and arrive
+            # Determine the airport of departure and arrive
             flight_airport = FlightAirport(flight=flight, airport=airports[0], from_to_marker='ARR')
             flight_airport_base = FlightAirport(flight=flight, airport=base_airport, from_to_marker='DEP')
         flight_airport.save()
