@@ -77,3 +77,19 @@ class Status(models.Model):
 class FlightStatus(models.Model):
     flight = models.ForeignKey('Flight', on_delete=models.CASCADE)
     status = models.ForeignKey('Status', on_delete=models.CASCADE)
+
+
+class Weather(models.Model):
+    datetime = models.DateTimeField()
+    wind_cdir_full = models.CharField(max_length=20, verbose_name='wind direction')
+    wind_spd = models.FloatField(verbose_name='wind speed')
+    temp = models.FloatField(verbose_name='temperature')
+    precip = models.IntegerField(verbose_name='precipitation, mm')
+    snow = models.IntegerField()
+    rh = models.IntegerField(verbose_name='relative humidity, %')
+    clouds = models.IntegerField(verbose_name='cloud coverage, %')
+
+    class Meta:
+        """Index for Weather
+            - search for datetime"""
+        indexes = [models.Index(fields=['datetime'])]
