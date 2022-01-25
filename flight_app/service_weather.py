@@ -1,3 +1,5 @@
+"""WeatherService - request data from weather API - https://api.weatherbit.io/v2.0/forecast/hourly,
+    parse data (serializers.py) """
 import os
 import requests
 
@@ -5,7 +7,9 @@ from flight_app.serializers import WeatherSerializer
 
 
 class WeatherService:
-    """WeatherService - take data from weather API and parse it"""
+    """WeatherService - take data from weather API, parse it and save into DB
+        URL: API url
+        ACCESS_KEY: API user's key(set in .env file)"""
     URL = 'https://api.weatherbit.io/v2.0/forecast/hourly'
     ACCESS_KEY = os.environ.get("WEATHER_KEY")
 
