@@ -140,9 +140,13 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 
 CELERY_BEAT_SCHEDULE = {
+    'parse_weather_task': {
+        'task': 'flight_app.tasks.parse_weather_task',
+        'schedule': crontab(hour=2, minute=00),
+    },
     'parse_flights_task': {
         'task': 'flight_app.tasks.parse_flights_task',
-        'schedule': crontab(hour=12, minute=55),
+        'schedule': crontab(hour=2, minute=10),
     }
 }
 

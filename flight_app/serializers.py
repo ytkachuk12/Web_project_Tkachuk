@@ -1,28 +1,11 @@
-"""DRF serializer
-TODO add weather"""
+"""DRF serializers:
+    - flight serializer
+    - weather serializer
+"""
 from rest_framework import serializers
 
-from flight_app.models import Flight, Aircraft, Airline, Status, Airport, FlightAirport
+from flight_app.models import Flight, Aircraft, Airline, Status, Airport, FlightAirport, Weather
 from flight_mate.settings import AMSTERDAM_BASE_AIRPORT_NAME
-
-
-class ResponseFlightSerializer(serializers.ModelSerializer):
-    """DRF serializer for api response based on Flight model
-    Serializer output related tables data (Airport model, Airline model)
-    Status and Airport related tables data contain only names(exclude id)
-    """
-    # redefine Status and Airport output
-    status = serializers.SlugRelatedField(many=True, read_only=True, slug_field='name')
-    airport = serializers.SlugRelatedField(many=True, read_only=True, slug_field='name')
-
-    class Meta:
-        """Set all fields that should be serialized
-            all fields has relation to model  Flight
-        Include all fields of related models"""
-        model = Flight
-        fields = '__all__'
-        # Add fields of related models
-        depth = 1
 
 
 class AirlineSerializer(serializers.ModelSerializer):
@@ -33,7 +16,7 @@ class AirlineSerializer(serializers.ModelSerializer):
 
     class Meta:
         """Set all fields that should be serialized
-        all fields has relate to model  Airline"""
+        all fields has relation to model  Airline"""
         model = Airline
         fields = ['airlineCode', 'prefixICAO', 'prefixIATA']
 
@@ -53,7 +36,7 @@ class AircraftSerializer(serializers.ModelSerializer):
 
     class Meta:
         """Set all fields that should be serialized
-            all fields has relate to model  Aircraft"""
+            all fields has relation to model  Aircraft"""
         model = Aircraft
         fields = ['aircraftRegistration', 'aircraftType']
 
@@ -65,7 +48,7 @@ class AircraftSerializer(serializers.ModelSerializer):
         return value['iataMain']
 
     def create(self, validated_data):
-        """Create new Aircraft in DB in case current aircraft does NOT exists in DB,
+        """Create new Aircraft in DB in case current aircraft does NOT exist in DB,
         return aircraft - obj of Aircraft"""
         obj, created = Aircraft.objects.get_or_create(
             registration=validated_data['registration'], type=validated_data['type']
@@ -101,7 +84,7 @@ class FlightSerializer(serializers.ModelSerializer):
 
     class Meta:
         """Set all fields that should be serialized
-            all fields has relate to model  Flight,
+            all fields has relation to model  Flight,
             exclude 'flightDirection' - it has no relate to model"""
         model = Flight
         fields = ['id', 'flightName', 'lastUpdatedAt', 'scheduleDateTime', 'actualLandingTime',
@@ -110,7 +93,7 @@ class FlightSerializer(serializers.ModelSerializer):
 
     def validate_route(self, value):
         """Since we have base airport - Schiphol "AMS",
-        it have been added into DB in ADVANCE.
+        it has been added into DB in ADVANCE.
         Take Airport instances from DB Airport model
             :return instances of Airport"""
         destinations = Airport.objects.filter(name__in=value['destinations'])
@@ -139,8 +122,8 @@ class FlightSerializer(serializers.ModelSerializer):
     @staticmethod
     def insert_into_flight_airport(direction: str, flight: Flight, airports: list[Airport]) -> None:
         """Insert data into FlightAirport model.
-        Determine the airport of depature and arrive
-        Add transit airpors (if it exists)
+        Determine the airport of departure and arrive
+        Add transit airports (if it exists)
             :param direction: departure flight "D" or an arrival flight "A".
             :param flight: Flight model object
             :param airports Airport model objects"""
@@ -172,7 +155,7 @@ class FlightSerializer(serializers.ModelSerializer):
         ).first()
         if not instance:
             return self.create(self.validated_data)
-        elif instance.last_update != self.validated_data['last_update']:
+        if instance.last_update != self.validated_data['last_update']:
             return self.update(instance, self.validated_data)
 
     def create(self, validated_data):
@@ -209,3 +192,47 @@ class FlightSerializer(serializers.ModelSerializer):
         instance.save()
         # todo: logger
         return instance
+
+
+class ResponseFlightSerializer(serializers.ModelSerializer):
+    """DRF serializer for api response based on Flight model
+    Serializer output related tables data (Airport model, Airline model)
+    Status and Airport related tables data contain only names(exclude id)
+    """
+    # redefine Status and Airport output
+    status = serializers.SlugRelatedField(many=True, read_only=True, slug_field='name')
+    airport = serializers.SlugRelatedField(many=True, read_only=True, slug_field='name')
+
+    class Meta:
+        """Set all fields that should be serialized
+            all fields has relation to model  Flight
+        Include all fields of related models"""
+        model = Flight
+        fields = '__all__'
+        # Add fields of related models
+        depth = 1
+
+
+class WeatherSerializer(serializers.ModelSerializer):
+    class Meta:
+        """Set all fields that should be serialized
+            all fields has relation to model  Weather
+        """
+        model = Weather
+        fields = '__all__'
+
+    def create(self, validated_data):
+        """Create new hourly_weather in DB in case current hour weather forecast does NOT exist in DB,
+            else update hourly_weather forcast
+        return weather forecast - obj of Weather"""
+        obj, created = Weather.objects.update_or_create(
+            datetime=validated_data['datetime'],
+            defaults={'wind_cdir_full': validated_data['wind_cdir_full'],
+                      'wind_spd': validated_data['wind_spd'],
+                      'temp': validated_data['temp'],
+                      'precip': validated_data['precip'],
+                      'snow': validated_data['snow'],
+                      'rh': validated_data['rh'],
+                      'clouds': validated_data['clouds']}
+        )
+        return obj

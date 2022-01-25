@@ -1,17 +1,20 @@
+"""Celery tasks:
+    - weather task. get data from weather api for number of HOURS and store it in DB
+    - flight task. det data from airport Schiphol api and store it in DB"""
 import datetime
 from celery import shared_task
 
 from flight_app.service import FlightService
+from flight_app.service_weather import WeatherService
 
-# from celery
-
+# get data for 14 days
 DAYS_AGO = 7
 DAYS_AHEAD = 7
 period = DAYS_AGO + DAYS_AHEAD + 1
 
+# get forecast for 7 days
+HOURS = 168
 
-# START_DAY = '2021-12-10'  # os.environ.get('START_DAY')
-# PERIOD = 7  # os.environ.get('PERIOD')
 
 def start_day() -> datetime.date:
     """Function count date of first day of period we want to store data.
@@ -23,9 +26,17 @@ def start_day() -> datetime.date:
 
 
 @shared_task
+def parse_weather_task():
+    """weather task"""
+    parse_weather = WeatherService(HOURS)
+    parse_weather.parse()
+    return True
+
+
+@shared_task
 def parse_flights_task():
+    """flight task"""
     current_day = start_day()
-    print("START TASK")
     for _ in range(period):
         parse_flights = FlightService(current_day)
         parse_flights.parse()
