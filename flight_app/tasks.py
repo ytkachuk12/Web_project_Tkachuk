@@ -18,7 +18,7 @@ HOURS = 168
 
 def start_day() -> datetime.date:
     """Function count date of first day of period we want to store data.
-     It equal today - period days ago
+     It equals today - period days ago
         :return datetime.date"""
     today = datetime.date.today()
     difference_between_days = datetime.timedelta(days=DAYS_AGO)

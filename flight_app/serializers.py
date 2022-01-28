@@ -21,7 +21,7 @@ class AirlineSerializer(serializers.ModelSerializer):
         fields = ['airlineCode', 'prefixICAO', 'prefixIATA']
 
     def create(self, validated_data):
-        """Create new Airline in DB in case current airline does NOT exists in DB,
+        """Create new Airline in DB in case current airline does NOT exist in DB,
         return airline - obj of Airline"""
         obj, created = Airline.objects.get_or_create(
             code=validated_data['code'], IATA=validated_data['IATA'], defaults={'ICAO': validated_data['ICAO']}
@@ -61,7 +61,7 @@ class AirportSerializer(serializers.ListSerializer):
     child = serializers.CharField()
 
     def save(self, **kwargs):
-        """Create new Airport in DB in case current airport does NOT exists in DB,
+        """Create new Airport in DB in case current airport does NOT exist in DB,
             return airport - obj of Airport"""
         for item in self.validated_data:
             Airport.objects.get_or_create(name=item)
@@ -170,7 +170,7 @@ class FlightSerializer(serializers.ModelSerializer):
         # add data in FlightStatus model
         flight.status.set(statuses)
         # add data in FlightAirport model (look insert_into_fligt_airport method above)
-        self.insert_into_fligt_airport(direction, flight, airports)
+        self.insert_into_flight_airport(direction, flight, airports)
         # todo: logger
         return flight
 
