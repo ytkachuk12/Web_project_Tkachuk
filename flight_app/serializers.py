@@ -170,7 +170,7 @@ class FlightSerializer(serializers.ModelSerializer):
         # add data in FlightStatus model
         flight.status.set(statuses)
         # add data in FlightAirport model (look insert_into_fligt_airport method above)
-        self.insert_into_fligt_airport(direction, flight, airports)
+        self.insert_into_flight_airport(direction, flight, airports)
         # todo: logger
         return flight
 

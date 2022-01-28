@@ -4,6 +4,7 @@
 
 from django.http import HttpResponse
 from rest_framework import generics, mixins
+from rest_framework.permissions import IsAuthenticated
 
 from flight_app.models import Flight, Weather
 from flight_app.serializers import ResponseFlightSerializer, WeatherSerializer
@@ -16,6 +17,7 @@ def index(request):
 class FlightListView(generics.ListAPIView):
     """View for route /flights/"""
     serializer_class = ResponseFlightSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         """Filter queryset by:
@@ -38,6 +40,7 @@ class FlightView(generics.ListAPIView):
     """View for route /flight/"""
     serializer_class_flight = ResponseFlightSerializer
     serializer_class_weather = WeatherSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset_flight(self):
         """Filter Flight queryset by:

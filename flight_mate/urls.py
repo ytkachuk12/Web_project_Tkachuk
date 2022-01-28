@@ -31,8 +31,6 @@ schema_view = get_schema_view(
         contact=openapi.Contact(email="contact@snippets.local"),
         license=openapi.License(name="BSD License"),
     ),
-    # url=f'{settings.APP_URL}/api/v3/',
-    patterns=[path('', include('flight_app.urls')), ],
     public=True,
     permission_classes=(permissions.AllowAny,),
 )
@@ -45,5 +43,6 @@ urlpatterns = [
     re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
     path('admin/', admin.site.urls),
-    path('', include('flight_app.urls', namespace='flight_app'))
+    path('', include('flight_app.urls', namespace='flight_app')),
+    path('authentication/', include('authentication.urls', namespace='authentication'))
 ]
