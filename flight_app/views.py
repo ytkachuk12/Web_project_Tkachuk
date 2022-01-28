@@ -4,6 +4,7 @@
 
 from django.http import HttpResponse
 from rest_framework import generics, mixins
+from rest_framework.permissions import IsAuthenticated
 
 from flight_app.models import Flight, Weather
 from flight_app.serializers import ResponseFlightSerializer, WeatherSerializer
@@ -16,6 +17,7 @@ def index(request):
 class FlightListView(generics.ListAPIView):
     """View for route /flights/"""
     serializer_class = ResponseFlightSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         """Filter queryset by:
@@ -23,9 +25,9 @@ class FlightListView(generics.ListAPIView):
             - by date
             - by period"""
         queryset = Flight.objects.all().order_by('schedule_date_time')
-        date = self.request.query_params.get('date', None)
-        start_date = self.request.query_params.get('start_date', None)
-        end_date = self.request.query_params.get('end_date', None)
+        date = self.request.query_params.get('date')
+        start_date = self.request.query_params.get('start_date')
+        end_date = self.request.query_params.get('end_date')
         if date:
             queryset = queryset.filter(schedule_date_time__date=date).order_by('schedule_date_time')
         elif start_date and end_date:
@@ -38,6 +40,7 @@ class FlightView(generics.ListAPIView):
     """View for route /flight/"""
     serializer_class_flight = ResponseFlightSerializer
     serializer_class_weather = WeatherSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset_flight(self):
         """Filter Flight queryset by:
@@ -57,7 +60,7 @@ class FlightView(generics.ListAPIView):
         """Filter Weather queryset by:
             - by current flight datetime where time round to hour(replace microsecond=0, second=0 and minute=0)"""
         # get parameters from request
-        flight_id = self.request.query_params.get('id', None)
+        flight_id = self.request.query_params.get('id')
 
         # get queryset flight schedule date and time
         flight = Flight.objects.filter(id=flight_id).values_list('schedule_date_time', flat=True)
