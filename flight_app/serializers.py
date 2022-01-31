@@ -194,6 +194,22 @@ class FlightSerializer(serializers.ModelSerializer):
         return instance
 
 
+class ResponseFlightAirportSerializer(serializers.HyperlinkedModelSerializer):
+    """DRF serializer for api response based on FlightAirport model
+    Serializer output:
+        - name: Airport.name field
+        - from_to_marker: FlightAirport model field"""
+    name = serializers.ReadOnlyField(source='airport.name')
+    from_to_marker = serializers.ReadOnlyField()
+
+    class Meta:
+        """Set fields that should be serialized
+            name: field has relation to model  Airport
+            from_to_marker: field has relation to model FlightAirport"""
+        model = FlightAirport
+        fields = ['name', 'from_to_marker']
+
+
 class ResponseFlightSerializer(serializers.ModelSerializer):
     """DRF serializer for api response based on Flight model
     Serializer output related tables data (Airport model, Airline model)
@@ -201,7 +217,7 @@ class ResponseFlightSerializer(serializers.ModelSerializer):
     """
     # redefine Status and Airport output
     status = serializers.SlugRelatedField(many=True, read_only=True, slug_field='name')
-    airport = serializers.SlugRelatedField(many=True, read_only=True, slug_field='name')
+    airport = ResponseFlightAirportSerializer(source='flightairport_set', many=True)
 
     class Meta:
         """Set all fields that should be serialized
