@@ -4,59 +4,12 @@ from django.db import migrations
 from elasticsearch import Elasticsearch
 
 from django.conf import settings
+from flight_app.management.commands.es_index_mapping import Command
 
 
 def create_ES_mapping(apps, schema_editor):
-
-    es = Elasticsearch(hosts=settings.ELASTIC_HOST)
-
-    index_mapping = {
-        "settings": {
-            "number_of_shards": 3,
-            "number_of_replicas": 1
-        },
-        "mappings": {
-            "dynamic": "false",  # maybe strict
-            "properties": {
-                "name": {"type": "text"},
-                "last_update": {"type": "date", "format": "yyyy-MM-dd"},
-                "schedule_date_time": {"type": "date", "format": "yyyy-MM-dd"},
-                "actual_landing_time": {"type": "date", "format": "yyyy-MM-dd", "null_value": "NULL"},
-                "actual_off_time": {"type": "date", "format": "yyyy-MM-dd", "null_value": "NULL"},
-                "expected_boarding_time": {"type": "date", "format": "yyyy-MM-dd", "null_value": "NULL"},
-                "estimate_landing_time": {"type": "date", "format": "yyyy-MM-dd", "null_value": "NULL"},
-                "airline": {
-                    "properties": {
-                        "code": {"type": "integer"},
-                        "ICAO": {"type": "text"},
-                        "IATA": {"type": "text"}
-                    }
-                },
-                "aircraft": {
-                    "properties": {
-                        "type": {"type": "text"},
-                        "registration": {"type": "text"}
-                    }
-                },
-                "status": {
-                    "type": "nested",
-                    "properties": {
-                        "name": {"type": "text"}
-                    }
-                },
-                "airport": {
-                    "type": "nested",
-                    "properties": {
-                        "name": {"type": "text"},
-                        "from_to_marker": {"type": "text"}
-                    }
-                }
-            }
-        }
-    }
-
-    # create index
-    es.indices.create(index="flights", ignore=400, body=index_mapping)
+    create_mapping = Command()
+    create_mapping.handle()
 
 
 class Migration(migrations.Migration):
