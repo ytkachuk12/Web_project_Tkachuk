@@ -1,19 +1,21 @@
-"""Create django custom command, for crete ElasticSearch index with mappind.
-    Mapping by default create during migrate
-    """
+"""Create django custom command, for crete ElasticSearch index with mapping.
+    for run: 'python manage.py es_index_mapping' without arguments"""
 from django.core.management.base import BaseCommand
 from elasticsearch import Elasticsearch
+
 
 from django.conf import settings
 
 
 class Command(BaseCommand):
     """Create django custom command, for create ElasticSearch index with mapping
-    """
+        Name - ELASTIC_INDEX_NAME, hosts - ELASTIC_HOST(look settings.py)
+        and body - index_mapping"""
     help = 'Run es'
 
     def handle(self, *args, **options):
-
+        """Create ES index, with name - ELASTIC_INDEX_NAME, hosts - ELASTIC_HOST(look settings.py)
+         and body - index_mapping"""
         es = Elasticsearch(hosts=settings.ELASTIC_HOST)
 
         index_mapping = {
@@ -62,4 +64,4 @@ class Command(BaseCommand):
         }
 
         # create index
-        es.indices.create(index="flights", ignore=400, body=index_mapping)
+        es.indices.create(index=settings.ELASTIC_INDEX_NAME, ignore=400, body=index_mapping)

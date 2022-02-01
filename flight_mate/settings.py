@@ -173,4 +173,4 @@ AMSTERDAM_BASE_AIRPORT_NAME = "AMS"
 # set name of docker container name
 ELASTIC_HOST = ["es"]
 # set name of ElasticSearch index
-ELASTIC_FLIGHT_INDEX = "flights"
+ELASTIC_INDEX_NAME = "flights"
