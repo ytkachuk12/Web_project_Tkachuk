@@ -187,8 +187,8 @@ class FlightSerializer(serializers.ModelSerializer):
 
         # pop statuses from all validated data clear previous statuses and set new
         statuses = validated_data.pop('status')
-        instance.name.clear()
-        instance.name.set(statuses)
+        instance.status.clear()
+        instance.status.set(statuses)
         instance.save()
         # todo: logger
         return instance
