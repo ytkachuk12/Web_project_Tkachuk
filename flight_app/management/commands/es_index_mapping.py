@@ -20,8 +20,8 @@ class Command(BaseCommand):
 
         index_mapping = {
             "settings": {
-                "number_of_shards": 3,
-                "number_of_replicas": 1
+                "number_of_shards": 1,
+                "number_of_replicas": 0
             },
             "mappings": {
                 "dynamic": "false",  # maybe strict
