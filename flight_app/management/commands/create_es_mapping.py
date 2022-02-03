@@ -9,7 +9,7 @@ class Command(BaseCommand):
     """Create django custom command, for create ElasticSearch index with mapping
         Name - ELASTIC_INDEX_NAME, hosts - ELASTIC_HOST(look settings.py)
         and body - index_mapping(for code look create_es_mapping.py)"""
-    help = 'Run es'
+    help = 'the command run ElasticSearch mapping'
 
     def handle(self, *args, **options):
         """For code - look create_es_mapping.py file"""
