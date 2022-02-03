@@ -5,6 +5,7 @@ from django.conf import settings
 def create_es_mapping():
     """Create ES index, with name - ELASTIC_INDEX_NAME, hosts - ELASTIC_HOST(look settings.py)
          and body - index_mapping"""
+    # import ElasticSearch instance
     es = settings.ES
 
     index_mapping = {
