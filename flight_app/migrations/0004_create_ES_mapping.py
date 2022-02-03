@@ -8,7 +8,7 @@ from flight_app.service_es_mapping import create_es_mapping
 
 
 def es_mapping(apps, schema_editor):
-    """Create django custom command, for create ElasticSearch index with mapping
+    """create ElasticSearch index with mapping
         Name - ELASTIC_INDEX_NAME, hosts - ELASTIC_HOST(look settings.py)
         and body - index_mapping(for code look create_es_mapping.py)"""
     create_es_mapping()
