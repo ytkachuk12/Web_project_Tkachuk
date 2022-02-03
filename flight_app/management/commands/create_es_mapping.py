@@ -27,12 +27,12 @@ class Command(BaseCommand):
                 "dynamic": "false",  # maybe strict
                 "properties": {
                     "name": {"type": "text"},
-                    "last_update": {"type": "date", "format": "yyyy-MM-dd"},
-                    "schedule_date_time": {"type": "date", "format": "yyyy-MM-dd"},
-                    "actual_landing_time": {"type": "date", "format": "yyyy-MM-dd", "null_value": "NULL"},
-                    "actual_off_time": {"type": "date", "format": "yyyy-MM-dd", "null_value": "NULL"},
-                    "expected_boarding_time": {"type": "date", "format": "yyyy-MM-dd", "null_value": "NULL"},
-                    "estimate_landing_time": {"type": "date", "format": "yyyy-MM-dd", "null_value": "NULL"},
+                    "last_update": {"type": "date"},
+                    "schedule_date_time": {"type": "date"},
+                    "actual_landing_time": {"type": "date", "null_value": "NULL"},
+                    "actual_off_time": {"type": "date", "null_value": "NULL"},
+                    "expected_boarding_time": {"type": "date", "null_value": "NULL"},
+                    "estimate_landing_time": {"type": "date", "null_value": "NULL"},
                     "airline": {
                         "properties": {
                             "code": {"type": "integer"},
@@ -64,4 +64,5 @@ class Command(BaseCommand):
         }
 
         # create index
-        es.indices.create(index=settings.ELASTIC_INDEX_NAME, ignore=400, body=index_mapping)
+        # es.indices.create(index=settings.ELASTIC_INDEX_NAME, ignore=400, body=index_mapping)
+        es.indices.create(index="my", ignore=400, body=index_mapping)

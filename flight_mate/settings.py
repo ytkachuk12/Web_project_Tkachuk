@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 import os
+from elasticsearch import Elasticsearch
+
 
 from celery.schedules import crontab
 
@@ -174,3 +176,5 @@ AMSTERDAM_BASE_AIRPORT_NAME = "AMS"
 ELASTIC_HOST = ["es"]
 # set name of ElasticSearch index
 ELASTIC_INDEX_NAME = "flights"
+# crete ElasticSearch obj
+ES = Elasticsearch(hosts=ELASTIC_HOST)
