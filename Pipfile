@@ -15,6 +15,7 @@ datetime = "*"
 djangorestframework = "*"
 drf-yasg = "*"
 djangorestframework-simplejwt = "*"
+elasticsearch = "*"
 
 [dev-packages]
 

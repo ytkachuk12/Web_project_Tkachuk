@@ -5,7 +5,7 @@
 from rest_framework import serializers
 
 from flight_app.models import Flight, Aircraft, Airline, Status, Airport, FlightAirport, Weather
-from flight_mate.settings import AMSTERDAM_BASE_AIRPORT_NAME
+from django.conf import settings
 
 
 class AirlineSerializer(serializers.ModelSerializer):
@@ -127,8 +127,8 @@ class FlightSerializer(serializers.ModelSerializer):
             :param direction: departure flight "D" or an arrival flight "A".
             :param flight: Flight model object
             :param airports Airport model objects"""
-        # get base Amsterdam Schiphol airport (id=1, name="AMS")
-        base_airport = Airport.objects.get(name=AMSTERDAM_BASE_AIRPORT_NAME)
+        # get base Amsterdam Schiphol airport (id=1, name="AMS") from settings.py
+        base_airport = Airport.objects.get(name=settings.AMSTERDAM_BASE_AIRPORT_NAME)
         if direction == 'A':
             # Determine the airport of departure and arrive
             flight_airport = FlightAirport(flight=flight, airport=airports[0], from_to_marker='DEP')
