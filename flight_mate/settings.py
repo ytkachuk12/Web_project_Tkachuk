@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 import os
+from elasticsearch import Elasticsearch
+
 
 from celery.schedules import crontab
 
@@ -147,9 +149,6 @@ CELERY_BEAT_SCHEDULE = {
     }
 }
 
-# Name of base airport(all flights arrive from or departure to the Amsterdam "AMS" Schiphol airport)
-AMSTERDAM_BASE_AIRPORT_NAME = "AMS"
-
 # Create Django custom user's model
 AUTH_USER_MODEL = 'authentication.User'
 
@@ -168,3 +167,14 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
     'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
 }
+
+# Name of base airport(all flights arrive from or departure to the Amsterdam "AMS" Schiphol airport)
+AMSTERDAM_BASE_AIRPORT_NAME = "AMS"
+
+
+# set name of docker container name
+ELASTIC_HOST = ["es"]
+# set name of ElasticSearch index
+ELASTIC_INDEX_NAME = "flights"
+# crete ElasticSearch obj
+ES = Elasticsearch(hosts=ELASTIC_HOST)

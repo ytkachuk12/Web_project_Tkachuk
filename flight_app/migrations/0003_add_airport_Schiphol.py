@@ -2,12 +2,12 @@
 """Create base Schiphol Amsterdam airport"""
 from django.db import migrations
 
-from flight_mate.settings import AMSTERDAM_BASE_AIRPORT_NAME
+from django.conf import settings
 
 
 def insert_airport(apps, schema_editor):
     Airport = apps.get_model('flight_app', 'Airport')
-    Airport.objects.create(name=AMSTERDAM_BASE_AIRPORT_NAME)
+    Airport.objects.create(name=settings.AMSTERDAM_BASE_AIRPORT_NAME)
 
 
 class Migration(migrations.Migration):
