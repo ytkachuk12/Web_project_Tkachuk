@@ -62,5 +62,3 @@ class FlightService:
 
             if deserialized_flight.is_valid():
                 deserialized_flight.save()
-
-
