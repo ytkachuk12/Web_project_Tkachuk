@@ -7,7 +7,7 @@
 import datetime
 from celery import shared_task, chain
 
-from flight_app.service import FlightService
+from flight_app.service_flights import FlightService
 from flight_app.service_weather import WeatherService
 from flight_app.service_es_doc import create_es_doc
 
@@ -42,7 +42,7 @@ def parse_weather_task():
 @shared_task
 def parse_flights_task():
     """Flight task
-    Celery task for running service.py for some days (look above 'PERIOD')
+    Celery task for running service_flights.py for some days (look above 'PERIOD')
     Task starts from chain (look chain_task())"""
     current_day = start_day()
     for _ in range(PERIOD):
