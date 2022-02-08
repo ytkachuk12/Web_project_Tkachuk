@@ -2,9 +2,9 @@
     'python manage.py run_parse_flights [date] [-p --period]'
     """
 from datetime import datetime
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
-from flight_app.service import FlightService
+from flight_app.service_flights import FlightService
 
 
 class Command(BaseCommand):

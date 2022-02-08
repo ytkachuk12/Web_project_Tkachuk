@@ -18,6 +18,7 @@ from elasticsearch import Elasticsearch
 
 from celery.schedules import crontab
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -138,16 +139,15 @@ CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL")
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 
+# run chain task by schedule: every day at 2 a.m
 CELERY_BEAT_SCHEDULE = {
-    'parse_weather_task': {
-        'task': 'flight_app.tasks.parse_weather_task',
+    'chain_task': {
+        'task': 'flight_app.tasks.chain_task',
         'schedule': crontab(hour=2, minute=00),
     },
-    'parse_flights_task': {
-        'task': 'flight_app.tasks.parse_flights_task',
-        'schedule': crontab(hour=2, minute=10),
-    }
+
 }
+
 
 # Create Django custom user's model
 AUTH_USER_MODEL = 'authentication.User'
@@ -172,9 +172,7 @@ SIMPLE_JWT = {
 AMSTERDAM_BASE_AIRPORT_NAME = "AMS"
 
 
-# set name of docker container name
+# set host of docker ElasticSearch container
 ELASTIC_HOST = ["es"]
 # set name of ElasticSearch index
 ELASTIC_INDEX_NAME = "flights"
-# crete ElasticSearch obj
-ES = Elasticsearch(hosts=ELASTIC_HOST)
