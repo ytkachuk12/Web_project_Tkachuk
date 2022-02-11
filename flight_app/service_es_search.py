@@ -88,10 +88,10 @@ class SearchService:
                 {"term": {"airline.code": self.airline_code}})
         elif self.airline_ICAO:
             self.query_body['query']['bool']["filter"].append(
-                {"term": {"airline.ICAO": self.airline_ICAO.lower()}})
+                {"term": {"airline.ICAO": self.airline_ICAO.upper()}})
         elif self.airline_IATA:
             self.query_body['query']['bool']["filter"].append(
-                {"term": {"airline.IATA": self.airline_IATA.lower()}})
+                {"term": {"airline.IATA": self.airline_IATA.upper()}})
 
         # add into 'filter' key - status filter
         if self.status:
@@ -100,7 +100,7 @@ class SearchService:
                     "path": "status",
                     "query": {
                         "bool":
-                            {"filter": [{"term": {"status.name": self.status.lower()}}]}
+                            {"filter": [{"term": {"status.name": self.status.upper()}}]}
                     }
                 }})
 
@@ -111,7 +111,7 @@ class SearchService:
                     "path": "airport",
                     "query": {
                         "bool":
-                            {"filter": [{"term": {"airport.name": self.airport.lower()}}]}
+                            {"filter": [{"term": {"airport.name": self.airport.upper()}}]}
                     }
                 }})
 
@@ -122,7 +122,7 @@ class SearchService:
                     "path": "airport",
                     "query": {
                         "bool":
-                            {"filter": [{"term": {"airport.from_to_marker": "tran"}}]}
+                            {"filter": [{"term": {"airport.from_to_marker": "TRAN"}}]}
                     }
                 }})
         elif self.connected_flight == 'n':
@@ -131,7 +131,7 @@ class SearchService:
                     "path": "airport",
                     "query": {
                         "bool":
-                            {"must_not": [{"term": {"airport.from_to_marker": "tran"}}]}
+                            {"must_not": [{"term": {"airport.from_to_marker": "TRAN"}}]}
                     }
                 }})
 

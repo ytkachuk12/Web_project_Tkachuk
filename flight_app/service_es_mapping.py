@@ -30,14 +30,14 @@ def create_es_mapping():
                 "airline": {
                     "properties": {
                         "code": {"type": "integer"},
-                        "ICAO": {"type": "text"},
-                        "IATA": {"type": "text"}
+                        "ICAO": {"type": "keyword"},
+                        "IATA": {"type": "keyword"}
                     }
                 },
                 "aircraft": {
                     "properties": {
-                        "type": {"type": "text"},
-                        "registration": {"type": "text"}
+                        "type": {"type": "keyword"},
+                        "registration": {"type": "keyword"}
                     }
                 },
                 "status": {
@@ -49,8 +49,8 @@ def create_es_mapping():
                 "airport": {
                     "type": "nested",
                     "properties": {
-                        "name": {"type": "text"},
-                        "from_to_marker": {"type": "text"}
+                        "name": {"type": "keyword"},
+                        "from_to_marker": {"type": "keyword"}
                     }
                 }
             }
