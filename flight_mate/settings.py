@@ -13,8 +13,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 import os
-from elasticsearch import Elasticsearch
-
 
 from celery.schedules import crontab
 
