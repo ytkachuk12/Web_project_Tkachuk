@@ -1,13 +1,17 @@
 """Flight_app views:
     - for route /flights/
-    - for route /flight/"""
+    - for route /flight/
+    - for route /search/"""
 
 from django.http import HttpResponse
 from rest_framework import generics, mixins
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 from flight_app.models import Flight, Weather
-from flight_app.serializers import ResponseFlightSerializer, WeatherSerializer
+from flight_app.serializers import ResponseFlightSerializer, WeatherSerializer, RequestSearchSerializer
+from flight_app.service_es_search import SearchService
 
 
 def index(request):
@@ -72,3 +76,21 @@ class FlightView(generics.ListAPIView):
         flight = self.serializer_class_flight(self.get_queryset_flight(), many=True)
         weather = self.serializer_class_weather(self.get_queryset_weather(), many=True)
         return mixins.Response({"flight": flight.data, "weather": weather.data})
+
+
+class SearchView(APIView):
+    """View for route /search/, method GET"""
+    # permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        """Method GET.
+        get data from request, serialize it and call SearchService(look service_es_search.py)"""
+        # get all request's parameters
+        data = self.request.query_params
+        # pass it into serializer
+        serializer = RequestSearchSerializer(data=data)
+
+        if serializer.is_valid(raise_exception=True):
+            search_service = SearchService(**serializer.data)
+            response = search_service.search()
+        return Response(response)
