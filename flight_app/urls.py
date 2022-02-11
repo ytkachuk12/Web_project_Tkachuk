@@ -7,7 +7,7 @@ There are 3 path:
 from django.urls import path
 
 from . import views
-from flight_app.views import FlightListView, FlightView
+from flight_app.views import FlightListView, FlightView, SearchView
 
 app_name = 'flight_app'
 
@@ -15,4 +15,5 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('flights/', FlightListView.as_view(), name='flights'),
     path('flight/', FlightView.as_view(), name='flight'),
+    path('search/', SearchView.as_view(), name='search'),
 ]

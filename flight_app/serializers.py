@@ -1,6 +1,7 @@
 """DRF serializers:
     - flight serializer
     - weather serializer
+    - search serializer
 """
 from rest_framework import serializers
 
@@ -252,3 +253,76 @@ class WeatherSerializer(serializers.ModelSerializer):
                       'clouds': validated_data['clouds']}
         )
         return obj
+
+
+class RequestSearchSerializer(serializers.Serializer):
+    """DRF serializer for ES search request data
+        const: SIZE: int, number cof returning docs per page
+        const: PAGE: int, page number
+        :param name: Option[str], search by full or part of word, ES field 'name'
+        :param date: Option[date], filter by date, ES field 'schedule_date_time'
+        :param start_date: Option[date], filter dy period of dates, ES field 'schedule_date_time'
+        :param last_date: Option[date], filter dy period of dates, ES field 'schedule_date_time'
+        :param code: Option[int], filter by airline code, ES field 'airline.code'
+        :param ICAO: Option[str], filter by airline ICAO abbr, ES field 'airline.ICAO'
+        :param ICAO: Option[str], filter by airline IATA abbr, ES field 'airline.IATA'
+        :param status: Option[str], filter by status abbr, ES field 'status.name'
+        :param airport: Option[str], filter by airport abbr, ES field 'airport.name'
+        :param connected: Optional[choices= 'y' or 'n'],
+                filter by connected or not flights, ES field 'airport.from_to_marker'
+        :param pagination: int, by default=10, quantity returning docs
+        """
+    # pagination const
+    SIZE = 10
+    PAGE = 0
+
+    name = serializers.CharField(max_length=15, allow_null=True)
+
+    date = serializers.DateField(allow_null=True)
+    start_date = serializers.DateField(allow_null=True)
+    last_date = serializers.DateField(allow_null=True)
+
+    code = serializers.IntegerField(allow_null=True)
+    ICAO = serializers.CharField(max_length=3, allow_null=True)
+    IATA = serializers.CharField(max_length=2, allow_null=True)
+
+    status = serializers.CharField(max_length=3, allow_null=True)
+
+    airport = serializers.CharField(max_length=3, allow_null=True)
+    connected = serializers.ChoiceField(choices=('y', 'n'), allow_null=True)
+
+    size = serializers.IntegerField(default=SIZE)
+    page = serializers.IntegerField(default=PAGE)
+
+    def validated_code(self, value):
+        """Convert request's code param to int"""
+        return self.validated_code_and_size(value)
+
+    def validated_size(self, value):
+        """Convert request's size param to int"""
+        return self.validated_code_and_size(value)
+
+    def validated_page(self, value):
+        """Convert request's page param to int"""
+        return self.validated_code_and_size(value)
+
+    @staticmethod
+    def validated_code_and_size(value):
+        """Convert request's params to int
+        Raise ValidationError in case can't convert to int"""
+        try:
+            int(value)
+        except ValueError() as error:
+            raise serializers.ValidationError(error)
+        return value
+
+    def validate(self, data):
+        """ Check that both parameters(start and last dates) provided
+        Check that the start date is before the last one
+        Else raise ValidationError"""
+        if (not data['start_date'] and data['last_date']) or (data['start_date'] and not data['last_date']):
+            raise serializers.ValidationError("2 dates must be provided")
+        if data['start_date'] and data['last_date']:
+            if data['start_date'] > data['last_date']:
+                raise serializers.ValidationError("finish must occur after start")
+        return data
