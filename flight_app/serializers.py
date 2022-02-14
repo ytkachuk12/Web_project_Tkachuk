@@ -267,7 +267,8 @@ class RequestSearchSerializer(serializers.Serializer):
         :param ICAO: Option[str], filter by airline ICAO abbr, ES field 'airline.ICAO'
         :param ICAO: Option[str], filter by airline IATA abbr, ES field 'airline.IATA'
         :param status: Option[str], filter by status abbr, ES field 'status.name'
-        :param airport: Option[str], filter by airport abbr, ES field 'airport.name'
+        :param dep_airport: Option[str], filter by departure airport, search by ES field 'airport.name, from_to_marker'
+        :param arr_airport: Optional[str], filter by arrive airport, search by ES field 'airport.name, from_to_marker'
         :param connected: Optional[choices= 'y' or 'n'],
                 filter by connected or not flights, ES field 'airport.from_to_marker'
         :param pagination: int, by default=10, quantity returning docs
@@ -288,7 +289,8 @@ class RequestSearchSerializer(serializers.Serializer):
 
     status = serializers.CharField(max_length=3, allow_null=True)
 
-    airport = serializers.CharField(max_length=3, allow_null=True)
+    dep_airport = serializers.CharField(max_length=3, allow_null=True)
+    arr_airport = serializers.CharField(max_length=3, allow_null=True)
     connected = serializers.ChoiceField(choices=('y', 'n'), allow_null=True)
 
     size = serializers.IntegerField(default=SIZE)
