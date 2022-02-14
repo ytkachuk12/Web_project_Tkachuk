@@ -80,7 +80,7 @@ class FlightView(generics.ListAPIView):
 
 class SearchView(APIView):
     """View for route /search/, method GET"""
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         """Method GET.

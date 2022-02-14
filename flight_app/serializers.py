@@ -3,6 +3,7 @@
     - weather serializer
     - search serializer
 """
+from datetime import datetime
 from rest_framework import serializers
 
 from flight_app.models import Flight, Aircraft, Airline, Status, Airport, FlightAirport, Weather
@@ -319,11 +320,21 @@ class RequestSearchSerializer(serializers.Serializer):
         return value
 
     def validate(self, data):
-        """ Check that both parameters(start and last dates) provided
+        """ Set missing date on today if only one date provided and period is correct
         Check that the start date is before the last one
         Else raise ValidationError"""
-        if (not data['start_date'] and data['last_date']) or (data['start_date'] and not data['last_date']):
-            raise serializers.ValidationError("2 dates must be provided")
+
+        if data['start_date'] and not data['last_date']:
+            if data['start_date'] <= datetime.today().date():
+                data['last_date'] = datetime.today().date()
+            else:
+                raise serializers.ValidationError("start date must be before than today")
+        if not data['start_date'] and data['last_date']:
+            if data['last_date'] >= datetime.today().date():
+                data['start_date'] = datetime.today().date()
+            else:
+                raise serializers.ValidationError("last date must be after than today")
+
         if data['start_date'] and data['last_date']:
             if data['start_date'] > data['last_date']:
                 raise serializers.ValidationError("finish must occur after start")
