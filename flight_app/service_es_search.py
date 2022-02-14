@@ -27,7 +27,8 @@ class SearchService:
         :param airline_ICAO Optional[str], filter by airline ICAO abbr
         :param airline_IATA Optional[str], filter by airline IATA abbr
         :param status Optional[str], filter by airline IATA abbr
-        :param airport Optional[str], filter by airport abbr
+        :param dep_airport, Optional[str], filter by departure airport abbr
+        :param arr_airport, Optional[str], filter by arrive airport abbr
         :param connected_flight Optional['y' or 'n'], filter by availability connected airport
         from_to_marker='TRAN' for connected flight and have no transition airport for not connected flight
         :param size int, pagination size(quantity of printing out results), by default 10
@@ -45,7 +46,8 @@ class SearchService:
 
         self.status = kwargs['status']
 
-        self.airport = kwargs['airport']
+        self.dep_airport = kwargs['dep_airport']
+        self.arr_airport = kwargs['arr_airport']
         self.connected_flight = kwargs['connected']
 
         self.size = kwargs['size']
@@ -104,14 +106,31 @@ class SearchService:
                     }
                 }})
 
-        # add into 'filter' key - airport name filter
-        if self.airport:
+        # add into 'filter' key - departure airport filter
+        if self.dep_airport:
             self.query_body['query']['bool']["filter"].append(
                 {"nested": {
                     "path": "airport",
                     "query": {
                         "bool":
-                            {"filter": [{"term": {"airport.name": self.airport.upper()}}]}
+                            {
+                                "filter": [{"term": {"airport.name": self.dep_airport.upper()}},
+                                           {"term": {"airport.from_to_marker": "DEP"}}]
+                             }
+                    }
+                }})
+
+        # add into 'filter' key - arrive airport filter
+        if self.arr_airport:
+            self.query_body['query']['bool']["filter"].append(
+                {"nested": {
+                    "path": "airport",
+                    "query": {
+                        "bool":
+                            {
+                                "filter": [{"term": {"airport.name": self.arr_airport.upper()}},
+                                           {"term": {"airport.from_to_marker": "ARR"}}]
+                            }
                     }
                 }})
 
