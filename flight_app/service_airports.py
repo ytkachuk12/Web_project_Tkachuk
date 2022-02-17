@@ -28,19 +28,28 @@ class AirportService:
         "resourceversion": "v4"
     }
 
-    def get_all_airports(self):
-        """Get all airports
-        Create correct url endpoint(add IATA code into request endpoint)
-        Call parser"""
+    def get_nodata_airports(self) -> None:
+        """Get airports that have no city, country, public_name.
+        Call api_request_service
+        """
+        airports = Airport.objects.filter(city=None, country=None, public_name=None)
+        self.url_create_service(airports)
 
+    def get_all_airports(self) -> None:
+        """Get all airports.
+        Call api_request_service"""
         airports = Airport.objects.all()
-        for airport in airports:
+        self.url_create_service(airports)
 
+    def url_create_service(self, airports: Airport) -> None:
+        """Create correct url endpoint(add IATA code into request endpoint)
+        Call parser"""
+        for airport in airports:
             url_with_IATA_code = self.URL + airport.name
 
             self.parse(airport, url_with_IATA_code)
 
-    def parse(self, airport, url_with_IATA_code):
+    def parse(self, airport, url_with_IATA_code: str) -> None:
         """Make request to API
         Serialize response, update Airport's public_name, city, country"""
         # api request
