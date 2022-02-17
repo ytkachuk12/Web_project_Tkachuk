@@ -8,6 +8,7 @@ import datetime
 from celery import shared_task, chain
 
 from flight_app.service_flights import FlightService
+from flight_app.service_airports import AirportService
 from flight_app.service_weather import WeatherService
 from flight_app.service_es_doc import create_es_doc
 
@@ -36,7 +37,6 @@ def parse_weather_task():
     Task starts from chain (look chain_task())"""
     parse_weather = WeatherService(HOURS)
     parse_weather.parse()
-    return True
 
 
 @shared_task
@@ -49,7 +49,16 @@ def parse_flights_task():
         parse_flights = FlightService(current_day)
         parse_flights.parse()
         current_day += datetime.timedelta(days=1)
-    return True
+
+
+@shared_task
+def parse_airports_task():
+    """Airport task
+    Celery task for running service_airports.py
+    Task starts from chain (look chain_task())
+    """
+    parse_airports = AirportService()
+    parse_airports.get_nodata_airports()
 
 
 @shared_task
@@ -61,7 +70,6 @@ def add_docs_into_es():
     for _ in range(PERIOD):
         create_es_doc(current_day)
         current_day += datetime.timedelta(days=1)
-    return True
 
 
 @shared_task
@@ -69,5 +77,5 @@ def chain_task():
     """Chain task
     Create queue of tasks, each chain's task - independent task (<task_name>.si() - immutable signatures)
     Task starts by schedule (look setting.py CELERY_BEAT_SCHEDULE)"""
-    res = chain(parse_weather_task.si(), parse_flights_task.si(), add_docs_into_es.si())()
+    res = chain(parse_weather_task.si(), parse_flights_task.si(), parse_airports_task.si(), add_docs_into_es.si())()
     res.get()
