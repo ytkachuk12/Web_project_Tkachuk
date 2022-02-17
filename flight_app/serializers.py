@@ -196,6 +196,27 @@ class FlightSerializer(serializers.ModelSerializer):
         return instance
 
 
+class AirportDescriptionSerializer(serializers.Serializer):
+    """DRF serializer for updating Airport's city, country, public_name
+    Has relation to Airport model
+    """
+    city = serializers.CharField(max_length=127, allow_null=True)
+    country = serializers.CharField(max_length=127)
+    publicName = serializers.DictField(child=serializers.CharField(max_length=127, allow_blank=True))
+
+    def validate_publicName(self, value):
+        """Return english variant of publicName("publicName": {"english": data, "another_fields": data})"""
+        return value['english']
+
+    def update(self, instance, validated_data):
+        """Update Airports city, country, public_name"""
+        instance.city = validated_data.get('city', instance.city)
+        instance.country = validated_data.get('country', instance.country)
+        instance.public_name = validated_data.get('publicName', instance.public_name)
+        instance.save()
+        return instance
+
+
 class ResponseFlightAirportSerializer(serializers.HyperlinkedModelSerializer):
     """DRF serializer for api response based on FlightAirport model
     Serializer output:

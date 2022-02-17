@@ -48,6 +48,9 @@ class Flight(models.Model):
 
 class Airport(models.Model):
     name = models.CharField(max_length=3, unique=True)
+    city = models.CharField(max_length=127, null=True)
+    country = models.CharField(max_length=127, null=True)
+    public_name = models.CharField(max_length=127, null=True)
 
     class Meta:
         """Index for Airport

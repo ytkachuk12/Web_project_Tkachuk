@@ -131,6 +131,14 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Url addresses for services
+# Schiphol url /flights/. (get flights)
+URL_FLIGHTS = 'https://api.schiphol.nl/public-flights/flights'
+# Schiphol url /destinations/. (get airports city, country, public_name)
+URL_AIRPORTS = 'https://api.schiphol.nl/public-flights/destinations/{iata}'
+# Weather url. (get weather)
+URL_WEATHER = 'https://api.weatherbit.io/v2.0/forecast/hourly'
+
 # Celery Configuration Options
 CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL")
 

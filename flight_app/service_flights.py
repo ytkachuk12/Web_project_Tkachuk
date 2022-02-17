@@ -5,6 +5,7 @@ import os
 from typing import Optional
 import requests
 
+from django.conf import settings
 from flight_app.serializers import FlightSerializer, AircraftSerializer, AirlineSerializer, AirportSerializer
 
 
@@ -17,7 +18,7 @@ class FlightService:
     Service take data from api:
         - per day(must be in ISO 8601 format: '2022-01-01')
         - per period: from_date, to_date(api returns data fo 2 days period only)"""
-    URL = 'https://api.schiphol.nl/public-flights/flights'
+    URL = settings.URL_FLIGHTS
     APP_ID = os.environ.get("API_ID")
     APP_KEY = os.environ.get("API_KEY")
     HEADERS = {
