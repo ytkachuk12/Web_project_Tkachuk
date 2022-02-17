@@ -13,7 +13,7 @@ services:
     env_file:
       - .env
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
 
   app:
     build: .
@@ -34,7 +34,7 @@ services:
     container_name: rabbitmq
     restart: always
     ports:
-      - "5672:5672"
+      - "127.0.0.1:5672:5672"
     depends_on:
       - app
 
@@ -66,7 +66,7 @@ services:
     volumes:
       - es-data:/usr/share/elasticsearch/data
     ports:
-      - "9200:9200"
+      - "127.0.0.1:9200:9200"
     depends_on:
       - app
 
@@ -79,7 +79,7 @@ services:
       ELASTICSEARCH_URL: http://es:9200
       ELASTICSEARCH_HOSTS: http://es:9200
     ports:
-      - "5601:5601"
+      - "127.0.0.1:5601:5601"
 
 volumes:
   db-data:

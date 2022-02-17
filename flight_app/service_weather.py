@@ -3,6 +3,7 @@
 import os
 import requests
 
+from django.conf import settings
 from flight_app.serializers import WeatherSerializer
 
 
@@ -10,7 +11,7 @@ class WeatherService:
     """WeatherService - take data from weather API, parse it and save into DB
         URL: API url
         ACCESS_KEY: API user's key(set in .env file)"""
-    URL = 'https://api.weatherbit.io/v2.0/forecast/hourly'
+    URL = settings.URL_WEATHER
     ACCESS_KEY = os.environ.get("WEATHER_KEY")
 
     def __init__(self, hours):
