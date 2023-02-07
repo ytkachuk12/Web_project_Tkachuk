@@ -1,0 +1,23 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+Django = "*"
+prospector = "*"
+yapf = "*"
+pylint-django = "*"
+requests = "*"
+psycopg2-binary = "*"
+celery = "*"
+datetime = "*"
+djangorestframework = "*"
+drf-yasg = "*"
+djangorestframework-simplejwt = "*"
+elasticsearch = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.9"

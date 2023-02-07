@@ -1,0 +1,87 @@
+version: "3.7"
+
+services:
+  db:
+    image: postgres:14.0-alpine
+    container_name: db
+    restart: always
+    environment:
+      - POSTGRES_USER=${SQL_USER}
+      - POSTGRES_PASSWORD=${SQL_PASSWORD}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    env_file:
+      - .env
+    ports:
+      - "127.0.0.1:5432:5432"
+
+  app:
+    build: .
+    container_name: app
+    command: python manage.py runserver 0.0.0.0:8000
+    restart: on-failure
+    volumes:
+      - .:/flight_mate
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+
+  rabbitmq:
+    image: rabbitmq:3.9-alpine
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "127.0.0.1:5672:5672"
+    depends_on:
+      - app
+
+  rabbit-worker:
+    build: .
+    container_name: rabbit-worker
+    restart: on-failure
+    environment:
+      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+    env_file:
+      - .env
+    command: celery -A flight_mate worker -B -l info
+    depends_on:
+      - rabbitmq
+
+  es:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.16.3
+    container_name: es
+    environment:
+      - node.name=es
+      - cluster.name=es-docker-cluster
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    ports:
+      - "127.0.0.1:9200:9200"
+    depends_on:
+      - app
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.7.0
+    container_name: kibana
+    depends_on:
+      - es
+    environment:
+      ELASTICSEARCH_URL: http://es:9200
+      ELASTICSEARCH_HOSTS: http://es:9200
+    ports:
+      - "127.0.0.1:5601:5601"
+
+volumes:
+  db-data:
+  es-data:
+    driver: local
